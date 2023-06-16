@@ -100,18 +100,25 @@ const createNewTour = (req, res) => {
   );
 };
 
-// app.get("/api/v1/tours", getAllTours);
-// app.post("/api/v1/tours", createNewTour);
-// app.get("/api/v1/tours/:id", getTourById);
-// app.patch("/api/v1/tours/:id", updateTour);
-// app.delete("/api/v1/tours/:id", DeleteTour);
+// ====> api routes
+app.get("/api/v1/tours", getAllTours);
 
-app.route("/api/v1/tours").get(getAllTours).post(createNewTour);
-app
-  .route("/api/v1/tours/:id")
-  .get(getTourById)
-  .patch(updateTour)
-  .delete(DeleteTour);
+// 👉 getting tour by id
+
+app.get("/api/v1/tours/:id", getTourById);
+
+// == 👉 patch request
+
+app.patch("/api/v1/tours/:id", updateTour);
+
+// == 👉 delete tour
+
+app.delete("/api/v1/tours/:id", DeleteTour);
+
+// =====> post request
+// 👉 express doesn't put the body data to the request for that we have to use the middleware. If we not defined the middleware then we will get the empty object.
+
+app.post("/api/v1/tours", createNewTour);
 
 // port
 

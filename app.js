@@ -48,6 +48,22 @@ app.get("/api/v1/tours/:id", (req, res) => {
   });
 });
 
+// == 👉 patch request
+
+app.patch("/api/v1/tours/:id", (req, res) => {
+  if (req.params.id * 1 > toursData.length) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Id not found",
+    });
+  }
+
+  res.status(200).json({
+    message: "success",
+    data: "<updated tour data here......>",
+  });
+});
+
 // =====> post request
 // 👉 express doesn't put the body data to the request for that we have to use the middleware. If we not defined the middleware then we will get the empty object.
 
@@ -56,7 +72,7 @@ app.post("/api/v1/tours", (req, res) => {
   // 👉 lets add the body object to our tours json
 
   const newId = toursData[toursData.length - 1].id + 1;
-  const newTour = Object.assign({ _id: newId }, req.body);
+  const newTour = Object.assign({ id: newId }, req.body);
   // console.log(newTour);
   toursData.push(newTour);
 

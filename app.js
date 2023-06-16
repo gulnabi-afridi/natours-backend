@@ -64,6 +64,23 @@ app.patch("/api/v1/tours/:id", (req, res) => {
   });
 });
 
+// == 👉 delete tour
+
+app.delete("/api/v1/tours/:id", (req, res) => {
+  if (req.params.id * 1 > toursData.length) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Id not found",
+    });
+  }
+
+  res.status(204).json({
+    //204 mean content not fount
+    message: "successfully deleted",
+    data: null,
+  });
+});
+
 // =====> post request
 // 👉 express doesn't put the body data to the request for that we have to use the middleware. If we not defined the middleware then we will get the empty object.
 

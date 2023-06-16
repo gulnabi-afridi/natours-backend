@@ -36,20 +36,20 @@ app.post("/api/v1/tours", (req, res) => {
 
   // 👉 now writing the latest toursData in the tours json file
 
-//   fs.writeFile(
-//     `${__dirname}/dev-data/data/tours.json`,
-//     JSON.stringify(toursData),
-//     (error) => {
-//       res.status(201).json({
-//         // 201 mean created successfully
-//         status: "success",
-//         data: {
-//           newTour,
-//         },
-//       });
-//     }
-//   );
-// });
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours.json`,
+    JSON.stringify(toursData),
+    (error) => {
+      res.status(201).json({
+        // 201 mean created successfully
+        status: "success",
+        data: {
+          newTour,
+        },
+      });
+    }
+  );
+});
 
 // port
 

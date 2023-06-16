@@ -140,22 +140,21 @@ const deleteUser = (req, res) => {
 // app.patch("/api/v1/tours/:id", updateTour);
 // app.delete("/api/v1/tours/:id", DeleteTour);
 
-// 👉 we want to use this midleware for this '/api/v1/tours' route
-const tourRouter = express.Router();
-const userRouter = express.Router();
+app.route("/api/v1/tours").get(getAllTours).post(createNewTour);
+app
+  .route("/api/v1/tours/:id")
+  .get(getTourById)
+  .patch(updateTour)
+  .delete(DeleteTour);
 
-app.use("/api/v1/tours", tourRouter);
-app.use("/api/v1/users", userRouter);
+//route for user
 
-//  route for tours
-
-tourRouter.route("/").get(getAllTours).post(createNewTour);
-tourRouter.route("/:id").get(getTourById).patch(updateTour).delete(DeleteTour);
-
-//  route for users
-
-userRouter.route("/").get(getAllUser).post(creatNewUser);
-userRouter.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
+app.route("/api/v1/users").get(getAllUser).post(creatNewUser);
+app
+  .route("/api/v1/users/:id")
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
 
 // port
 

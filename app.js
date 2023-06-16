@@ -13,14 +13,14 @@ const toursData = JSON.parse(
 );
 
 // ====> api routes
-// app.get("/api/v1/tours", (req, res) => {
-//   // overlaping the toursdata in other object with status code
-//   res.status(200).json({
-//     message: "success",
-//     result: toursData.length,
-//     data: toursData,
-//   });
-// });
+app.get("/api/v1/tours", (req, res) => {
+  // overlaping the toursdata in other object with status code
+  res.status(200).json({
+    message: "success",
+    result: toursData.length,
+    data: toursData,
+  });
+});
 
 // =====> post request
 // 👉 express doesn't put the body data to the request for that we have to use the middleware. If we not defined the middleware then we will get the empty object.

@@ -12,16 +12,19 @@ const toursData = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
-// =====> methodes
-const getAllTours = (req, res) => {
+// ====> api routes
+app.get("/api/v1/tours", (req, res) => {
+  // overlaping the toursdata in other object with status code
   res.status(200).json({
     message: "success",
     result: toursData.length,
     data: toursData,
   });
-};
+});
 
-const getTourById = (req, res) => {
+// 👉 getting tour by id
+
+app.get("/api/v1/tours/:id", (req, res) => {
   // we can define multiple params like /api/v1/tours/:id/:x/:y
   // we can make some parameter optional too like /api/v1/tours/:id/:x/:y?
 
@@ -43,9 +46,11 @@ const getTourById = (req, res) => {
       tour,
     },
   });
-};
+});
 
-const updateTour = (req, res) => {
+// == 👉 patch request
+
+app.patch("/api/v1/tours/:id", (req, res) => {
   if (req.params.id * 1 > toursData.length) {
     return res.status(404).json({
       status: "fail",
@@ -57,9 +62,11 @@ const updateTour = (req, res) => {
     message: "success",
     data: "<updated tour data here......>",
   });
-};
+});
 
-const DeleteTour = (req, res) => {
+// == 👉 delete tour
+
+app.delete("/api/v1/tours/:id", (req, res) => {
   if (req.params.id * 1 > toursData.length) {
     return res.status(404).json({
       status: "fail",
@@ -72,9 +79,12 @@ const DeleteTour = (req, res) => {
     message: "successfully deleted",
     data: null,
   });
-};
+});
 
-const createNewTour = (req, res) => {
+// =====> post request
+// 👉 express doesn't put the body data to the request for that we have to use the middleware. If we not defined the middleware then we will get the empty object.
+
+app.post("/api/v1/tours", (req, res) => {
   // console.log(req.body);
   // 👉 lets add the body object to our tours json
 
@@ -98,27 +108,7 @@ const createNewTour = (req, res) => {
       });
     }
   );
-};
-
-// ====> api routes
-app.get("/api/v1/tours", getAllTours);
-
-// 👉 getting tour by id
-
-app.get("/api/v1/tours/:id", getTourById);
-
-// == 👉 patch request
-
-app.patch("/api/v1/tours/:id", updateTour);
-
-// == 👉 delete tour
-
-app.delete("/api/v1/tours/:id", DeleteTour);
-
-// =====> post request
-// 👉 express doesn't put the body data to the request for that we have to use the middleware. If we not defined the middleware then we will get the empty object.
-
-app.post("/api/v1/tours", createNewTour);
+});
 
 // port
 

@@ -1,15 +1,12 @@
 const express = require("express");
 const fs = require("fs");
 
-const app = express();
-// 👉 midleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const router = express.Router();
 
 // ======> reading data
 // 👇 we have to parse the JSON to javascript object if not we will get in response the data in buffer form
 const toursData = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
+  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
 // =====> methodes
@@ -100,67 +97,7 @@ const createNewTour = (req, res) => {
   );
 };
 
-// ===> for users
+router.route("/").get(getAllTours).post(createNewTour);
+router.route("/:id").get(getTourById).patch(updateTour).delete(DeleteTour);
 
-const getAllUser = (req, res) => {
-  res.status(500).json({
-    status: "fail",
-    message: "this route is not defined yet",
-  });
-};
-const getUser = (req, res) => {
-  res.status(500).json({
-    status: "fail",
-    message: "this route is not defined yet",
-  });
-};
-const creatNewUser = (req, res) => {
-  res.status(500).json({
-    status: "fail",
-    message: "this route is not defined yet",
-  });
-};
-const updateUser = (req, res) => {
-  res.status(500).json({
-    status: "fail",
-    message: "this route is not defined yet",
-  });
-};
-const deleteUser = (req, res) => {
-  res.status(500).json({
-    // 500 status code mean internal server error
-    status: "fail",
-    message: "this route is not defined yet",
-  });
-};
-
-// app.get("/api/v1/tours", getAllTours);
-// app.post("/api/v1/tours", createNewTour);
-// app.get("/api/v1/tours/:id", getTourById);
-// app.patch("/api/v1/tours/:id", updateTour);
-// app.delete("/api/v1/tours/:id", DeleteTour);
-
-const tourRouter = express.Router();
-const userRouter = express.Router();
-
-// 👉 we want to use this midleware for this '/api/v1/tours' route
-app.use("/api/v1/tours", tourRouter);
-app.use("/api/v1/users", userRouter);
-
-//  route for tours
-
-tourRouter.route("/").get(getAllTours).post(createNewTour);
-tourRouter.route("/:id").get(getTourById).patch(updateTour).delete(DeleteTour);
-
-//  route for users
-
-userRouter.route("/").get(getAllUser).post(creatNewUser);
-userRouter.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
-
-// port
-
-const port = 3000;
-
-app.listen(port, () => {
-  console.log(`server is running ${port}`);
-});
+module.exports = router;

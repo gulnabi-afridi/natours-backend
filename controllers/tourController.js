@@ -6,6 +6,32 @@ const toursData = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+exports.checkedId = (req, res, next, val) => {
+  console.log(`tour id is ${val}`);
+  const id = req.params.id * 1;
+  if (id > toursData.length) {
+    return res.status(404).json({
+      status: "fail",
+      message: "invalid id",
+    });
+  }
+  next();
+};
+
+// ====> checked the body
+
+exports.checkBody = (req, res, next) => {
+  //   console.log(req.body.name);
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
+      // 400 mean bad request
+      status: "fail",
+      message: "missing name or price",
+    });
+  }
+  next();
+};
+
 // =====> methodes
 exports.getAllTours = (req, res) => {
   res.status(200).json({
@@ -23,14 +49,6 @@ exports.getTourById = (req, res) => {
   const id = req.params.id * 1;
   const tour = toursData.find((el) => el.id === id);
 
-  // if (id > toursData.length)
-  if (!tour) {
-    res.status(404).json({
-      status: "fail",
-      message: "invalid id",
-    });
-  }
-
   res.status(200).json({
     status: "success",
     data: {
@@ -40,13 +58,6 @@ exports.getTourById = (req, res) => {
 };
 
 exports.updateTour = (req, res) => {
-  if (req.params.id * 1 > toursData.length) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Id not found",
-    });
-  }
-
   res.status(200).json({
     message: "success",
     data: "<updated tour data here......>",
@@ -54,13 +65,6 @@ exports.updateTour = (req, res) => {
 };
 
 exports.DeleteTour = (req, res) => {
-  if (req.params.id * 1 > toursData.length) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Id not found",
-    });
-  }
-
   res.status(204).json({
     //204 mean content not fount
     message: "successfully deleted",

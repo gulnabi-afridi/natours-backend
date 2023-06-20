@@ -11,9 +11,4 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/tours", tourRouter); // the tourRouter middleware will only apply on tour route
 app.use("/api/v1/users", userRouter);
 
-// port
-const port = 3000;
-
-app.listen(port, () => {
-  console.log(`server is running ${port}`);
-});
+module.exports = app;

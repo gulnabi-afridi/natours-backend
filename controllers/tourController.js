@@ -73,12 +73,11 @@ exports.DeleteTour = (req, res) => {
 };
 
 exports.createNewTour = (req, res) => {
-  // console.log(req.body);
   // 👉 lets add the body object to our tours json
 
   const newId = toursData[toursData.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
-  // console.log(newTour);
+  // console.log(req.body);
   toursData.push(newTour);
 
   // 👉 now writing the latest toursData in the tours json file

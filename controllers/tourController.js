@@ -1,4 +1,5 @@
 const fs = require("fs");
+const Tour = require("./../models/tourModel");
 
 // ======> reading data
 // 👇 we have to parse the JSON to javascript object if not we will get in response the data in buffer form

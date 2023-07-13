@@ -7,30 +7,33 @@ dotenv.config({ path: "./config.env" });
 
 const app = require("./app");
 
-// =================================================================
+// =============================connection with database====================================
 const DB = process.env.DATABASE.replace(
   "<PASSWORD>",
   process.env.DATABASE_PASSWORD
 );
 
+// const LOCALDATABASE = process.env.DATABASE_LOCAL;
+
 mongoose
   .connect(DB, {
-    //  useNewUrlParser:true,
-    // useCreateIndex:true,
+    // .connect(process.env.DATABASE_LOCAL, {
+    // useNewUrlParser: true,
+    // useCreateIndex: true,
     // useFindAndModify: false,
   })
   .then((con) => {
-    console.log(con.Connection);
+    // console.log(con.connections);
     console.log("DB connection successfully created");
   });
+// =================================================
 // 👉 konsa enviroment chal raha hein
-console.log(app.get("env"));
+// console.log(app.get("env"));
 // 👉 will gave you all the enviromental varialble
 // console.log(process.env);
 
-// port
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-  console.log(`server is running ${port}`);
+  console.log(`App is running ${port}`);
 });

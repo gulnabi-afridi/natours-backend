@@ -1,6 +1,6 @@
 const express = require("express");
-const userRouter = require("./routes/users");
-const tourRouter = require("./routes/tours");
+const userRouter = require("./routes/userRoutes");
+const tourRouter = require("./routes/tourRoutes");
 
 const app = express();
 // 👉 midleware

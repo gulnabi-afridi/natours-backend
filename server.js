@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
-// 👉 read the file and save the varialbles to node environment
+// 👉 read the file and save the varialbles to node environment.
 dotenv.config({ path: "./config.env" });
 // console.log(process.env);
 

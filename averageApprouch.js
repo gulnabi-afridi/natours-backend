@@ -3,8 +3,23 @@ const fs = require("fs");
 
 const app = express();
 // 👉 midleware
+// the middleware will execute for all the req and res.
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// custom midleware ---------------------->
+
+app.use((req, res, next) => {
+  console.log("hello from the middleware 👋");
+  next();
+});
+
+// i want to check at which time each request is made -------------> so we will use midleWare for that
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 
 // ======> reading data
 // 👇 we have to parse the JSON to javascript object if not we will get in response the data in buffer form

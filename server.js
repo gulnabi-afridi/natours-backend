@@ -13,10 +13,10 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD
 );
 
-// const LOCALDATABASE = process.env.DATABASE_LOCAL;
+const LOCALDATABASE = process.env.DATABASE_LOCAL;
 
 mongoose
-  .connect(DB, {
+  .connect(LOCALDATABASE, {
     // .connect(process.env.DATABASE_LOCAL, {
     // useNewUrlParser: true,
     // useCreateIndex: true,

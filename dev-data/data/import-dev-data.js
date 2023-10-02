@@ -6,14 +6,14 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 
 // =============================connection with database====================================
-const DB = process.env.DATABASE.replace(
-  "<PASSWORD>",
-  process.env.DATABASE_PASSWORD
-);
+// const DB = process.env.DATABASE.replace(
+//   "<PASSWORD>",
+//   process.env.DATABASE_PASSWORD
+// );
 
-// const LOCALDATABASE = process.env.DATABASE_LOCAL;
+const LOCALDATABASE = process.env.DATABASE_LOCAL;
 
-mongoose.connect(DB, {}).then((con) => {
+mongoose.connect(LOCALDATABASE, {}).then((con) => {
   // console.log(con.connections);
   console.log("DB connection successfully created");
 });
@@ -31,7 +31,7 @@ const importData = async () => {
     console.log("Data successfully loaded!");
     process.exit();
   } catch (err) {
-    console.log(err);
+    console.log(err, "error related to importing the all tours to database 🔥");
   }
 };
 
@@ -43,7 +43,7 @@ const deleteData = async () => {
     console.log("Data successfully deleted!");
     process.exit();
   } catch (err) {
-    console.log(err);
+    console.log(err, "All Tour deleted 🙌");
   }
 };
 

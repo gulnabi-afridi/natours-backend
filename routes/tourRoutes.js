@@ -12,17 +12,11 @@ const router = express.Router();
 //   next();
 // });
 
-router.param("id", tourController.checkId);
-
-// Create a checkBody middleware
-// check if body contains the name and price property
-// if not, send back 400 (bad request).
-
 router
   .route("/")
   .get(tourController.getAllTours)
   //   ====> chaining of multiple midleware
-  .post(tourController.checkBody, tourController.createNewTour);
+  .post(tourController.createNewTour);
 
 router
   .route("/:id")

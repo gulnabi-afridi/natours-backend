@@ -1,67 +1,26 @@
 const Tour = require("./../models/tourModel");
+const APIFeatures = require("./../utils/apiFeatures");
 
 // =====> methodes
 
+exports.aliasTopTours = async (req, res, next) => {
+  req.query.limit = "5";
+  // -ratingsAverage = descending order
+  // ratingsAverage = asending order
+  req.query.sort = "-ratingsAverage,price";
+  req.query.fields = "name,price,ratingsAverage,summary,difficulty";
+  next();
+};
+
 exports.getAllTours = async (req, res) => {
   try {
-    // filtering the tour
-    // buid query
-    // 1A.) Filtering
-    const queryObj = { ...req.query };
-    const excludedFields = ["page", "sort", "limit", "fields"];
-    excludedFields.forEach((el) => delete queryObj[el]);
-    // console.log(req.query);
-
-    // 1B.) Advanced filtering
-    // the query would be like that 👇
-    // {difficulty:'easy',duration:{$gte:5}}
-    //   but we got in that form 👇
-    // {difficulty:'easy',duration:{gte:5}}  // so we have to add with req.query the $ sign
-    let queryString = JSON.stringify(queryObj);
-    queryString = queryString.replace(
-      /\b(gte|gt|lte|lt)\b/g,
-      (match) => `$${match}`
-    );
-
-    // we created the query
-    let query = Tour.find(JSON.parse(queryString));
-
-    // 2) sorting
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(" ");
-      query = query.sort(sortBy);
-      //-----> provide in that form 👉 sort('price ratingAverage')
-    } else {
-      query = query.sort("-createdAt");
-    }
-
-    // 3) Field Limiting
-    if (req.query.fields) {
-      // query = query.select('name duration price') accept in that format
-      const fields = req.query.fields.split(",").join(" ");
-      query = query.select(fields);
-    } else {
-      query = query.select("-__v"); // excluding v
-    }
-
-    // pagination
-    // page=2&limit=5  1-5 page 1 , 6-10 page 2 , 11-15 page 3 👇
-    // we need page 2 so we have to skip 5 document and starts from 6
-    // query = query.skip(2).limit(5)
-
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
-    const skip = (page - 1) * limit;
-
-    if (req.query.page) {
-      const numTours = await Tour.countDocuments();
-      if (skip >= numTours) throw new Error("This page does not exist");
-    }
-
-    query = query.skip(skip).limit(limit);
-
     // execute query
-    const tours = await query;
+    const features = new APIFeatures(Tour.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const tours = await features.query;
 
     res.status(200).json({
       message: "success",
@@ -143,6 +102,98 @@ exports.createNewTour = async (req, res) => {
   } catch (err) {
     //400 mean bad request
     res.status(400).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
+exports.getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: { $toUpper: "$difficulty" },
+          // _id: "$ratingsAverage",
+          numTours: { $sum: 1 },
+          numRatings: { $sum: "$ratingsQuantity" },
+          avgRating: { $avg: "$ratingsAverage" },
+          avgPrice: { $avg: "$price" },
+          minPrice: { $min: "$price" },
+          maxPrice: { $max: "$price" },
+        },
+      },
+      {
+        $sort: { avgPrice: 1 }, // 1 mean in acseding order
+      },
+      // {
+      //   $match: { _id: { $ne: "EASY" } },
+      // },
+    ]);
+    res.status(200).json({
+      message: "success",
+      data: stats,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
+exports.getMonthlyPlan = async (req, res) => {
+  try {
+    const year = req.params.year;
+    const plane = await Tour.aggregate([
+      {
+        $unwind: "$startDates", // The $unwind stage is used to deconstruct an array field within documents in a collection and create separate documents for each element of the array.
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$startDates" },
+          numTourStarts: { $sum: 1 },
+          tours: { $push: "$name" },
+        },
+      },
+      {
+        $addFields: { month: "$_id" },
+      },
+      {
+        $project: {
+          _id: 0, // 0 will hide the id and 1 will show the id.
+        },
+      },
+      {
+        $sort: {
+          numTourStarts: -1,
+        },
+      },
+      {
+        // $limit: 6, //this is show only 6 document
+      },
+    ]);
+
+    res.status(200).json({
+      message: "success",
+      data: {
+        result: plane.length,
+        data: plane,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
       status: "fail",
       message: err,
     });

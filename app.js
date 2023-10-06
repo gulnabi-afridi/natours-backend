@@ -18,4 +18,13 @@ app.use(express.static(`${__dirname}/public`));
 app.use('/api/v1/tours', tourRouter); // the tourRouter middleware will only apply on tour route
 app.use('/api/v1/users', userRouter);
 
+// 👉 HANDLE THE ROUTE WHICH ARE NOT DEFINED
+
+app.all('*', (req, res, next) => {
+  res.status(404).send({
+    status: 'fail',
+    message: `can't find ${req.originalUrl} on this server`,
+  });
+});
+
 module.exports = app;

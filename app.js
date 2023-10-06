@@ -2,6 +2,8 @@ const express = require('express');
 const userRouter = require('./routes/userRoutes');
 const tourRouter = require('./routes/tourRoutes');
 const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
+
 const e = require('express');
 
 const app = express();
@@ -29,14 +31,6 @@ app.all('*', (req, res, next) => {
 
 //
 
-app.use((err, req, res, next) => {
-  console.log(`${err.stack} 🔥`);
-  err.statusCode = err.statusCode || 500; // 500 mean internal server error
-  err.status = err.status || 'error';
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-});
+app.use(globalErrorHandler);
 
 module.exports = app;

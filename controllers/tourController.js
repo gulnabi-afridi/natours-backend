@@ -1,14 +1,14 @@
-const Tour = require("./../models/tourModel");
-const APIFeatures = require("./../utils/apiFeatures");
+const Tour = require('./../models/tourModel');
+const APIFeatures = require('./../utils/apiFeatures');
 
 // =====> methodes
 
 exports.aliasTopTours = async (req, res, next) => {
-  req.query.limit = "5";
+  req.query.limit = '5';
   // -ratingsAverage = descending order
   // ratingsAverage = asending order
-  req.query.sort = "-ratingsAverage,price";
-  req.query.fields = "name,price,ratingsAverage,summary,difficulty";
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
   next();
 };
 
@@ -23,7 +23,7 @@ exports.getAllTours = async (req, res) => {
     const tours = await features.query;
 
     res.status(200).json({
-      message: "success",
+      message: 'success',
       result: tours.length,
       data: {
         tours,
@@ -31,7 +31,7 @@ exports.getAllTours = async (req, res) => {
     });
   } catch (err) {
     res.status(404).json({
-      status: "fail",
+      status: 'fail',
       message: err,
     });
   }
@@ -41,14 +41,14 @@ exports.getTourById = async (req, res) => {
   try {
     const tour = await Tour.findById(req.params.id);
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         tour,
       },
     });
   } catch (err) {
     res.status(404).json({
-      status: "fail",
+      status: 'fail',
       message: err,
     });
   }
@@ -63,12 +63,12 @@ exports.updateTour = async (req, res) => {
       runValidators: true,
     });
     res.status(200).json({
-      message: "success",
+      message: 'success',
       tour,
     });
   } catch (err) {
     res.status(400).json({
-      status: "fail",
+      status: 'fail',
       message: err,
     });
   }
@@ -79,12 +79,12 @@ exports.DeleteTour = async (req, res) => {
     await Tour.findByIdAndDelete(req.params.id);
     res.status(204).json({
       //204 mean content not fount
-      message: "successfully deleted",
+      message: 'successfully deleted',
       data: null,
     });
   } catch (err) {
     res.status(404).json({
-      status: "fail",
+      status: 'fail',
       message: err,
     });
   }
@@ -95,14 +95,14 @@ exports.createNewTour = async (req, res) => {
     const newTour = await Tour.create(req.body);
     res.status(201).json({
       data: {
-        message: "New Tour Created",
+        message: 'New Tour Created',
         tour: newTour,
       },
     });
   } catch (err) {
     //400 mean bad request
     res.status(400).json({
-      status: "fail",
+      status: 'fail',
       message: err,
     });
   }
@@ -116,14 +116,14 @@ exports.getTourStats = async (req, res) => {
       },
       {
         $group: {
-          _id: { $toUpper: "$difficulty" },
+          _id: { $toUpper: '$difficulty' },
           // _id: "$ratingsAverage",
           numTours: { $sum: 1 },
-          numRatings: { $sum: "$ratingsQuantity" },
-          avgRating: { $avg: "$ratingsAverage" },
-          avgPrice: { $avg: "$price" },
-          minPrice: { $min: "$price" },
-          maxPrice: { $max: "$price" },
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
         },
       },
       {
@@ -134,12 +134,12 @@ exports.getTourStats = async (req, res) => {
       // },
     ]);
     res.status(200).json({
-      message: "success",
+      message: 'success',
       data: stats,
     });
   } catch (err) {
     res.status(404).json({
-      status: "fail",
+      status: 'fail',
       message: err,
     });
   }
@@ -150,7 +150,7 @@ exports.getMonthlyPlan = async (req, res) => {
     const year = req.params.year;
     const plane = await Tour.aggregate([
       {
-        $unwind: "$startDates", // The $unwind stage is used to deconstruct an array field within documents in a collection and create separate documents for each element of the array.
+        $unwind: '$startDates', // The $unwind stage is used to deconstruct an array field within documents in a collection and create separate documents for each element of the array.
       },
       {
         $match: {
@@ -162,13 +162,13 @@ exports.getMonthlyPlan = async (req, res) => {
       },
       {
         $group: {
-          _id: { $month: "$startDates" },
+          _id: { $month: '$startDates' },
           numTourStarts: { $sum: 1 },
-          tours: { $push: "$name" },
+          tours: { $push: '$name' },
         },
       },
       {
-        $addFields: { month: "$_id" },
+        $addFields: { month: '$_id' },
       },
       {
         $project: {
@@ -186,7 +186,7 @@ exports.getMonthlyPlan = async (req, res) => {
     ]);
 
     res.status(200).json({
-      message: "success",
+      message: 'success',
       data: {
         result: plane.length,
         data: plane,
@@ -194,7 +194,7 @@ exports.getMonthlyPlan = async (req, res) => {
     });
   } catch (err) {
     res.status(404).json({
-      status: "fail",
+      status: 'fail',
       message: err,
     });
   }

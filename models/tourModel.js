@@ -1,39 +1,39 @@
-const mongoose = require("mongoose");
-const slugify = require("slugify");
-const validator = require("validator");
+const mongoose = require('mongoose');
+const slugify = require('slugify');
+const validator = require('validator');
 
 const tourSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "A tour must have a unique name"],
+    required: [true, 'A tour must have a unique name'],
     unique: true,
     trim: true,
-    maxlength: [40, "A tour name must have less or equal then 40 characters"],
-    minlength: [10, "A tour name must have more or equal then 10 characters"],
-    validate: [validator.isAlpha, "A tour name must contain only letters"],
+    maxlength: [40, 'A tour name must have less or equal then 40 characters'],
+    minlength: [10, 'A tour name must have more or equal then 10 characters'],
+    validate: [validator.isAlpha, 'A tour name must contain only letters'],
   },
   slug: String,
   duration: {
     type: Number,
-    required: [true, "A tous must have duration"],
+    required: [true, 'A tous must have duration'],
   },
   maxGroupSize: {
     type: Number,
-    required: [true, "A tour must have a group size"],
+    required: [true, 'A tour must have a group size'],
   },
   difficulty: {
     type: String,
-    required: [true, "A tour must have difficulty"],
+    required: [true, 'A tour must have difficulty'],
     enum: {
-      values: ["easy", "medium", "difficult"],
-      message: "Difficulty is either easy, medium or difficult",
+      values: ['easy', 'medium', 'difficult'],
+      message: 'Difficulty is either easy, medium or difficult',
     },
   },
   ratingsAverage: {
     type: Number,
     default: 4.5,
-    min: [1, "Rating must be above 1.0"],
-    max: [5, "Rating must be below 5.0"],
+    min: [1, 'Rating must be above 1.0'],
+    max: [5, 'Rating must be below 5.0'],
   },
   ratingsQuantity: {
     type: Number,
@@ -41,7 +41,7 @@ const tourSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    required: [true, "A tour must have a price"],
+    required: [true, 'A tour must have a price'],
   },
   priceDiscount: {
     type: Number,
@@ -51,7 +51,7 @@ const tourSchema = new mongoose.Schema({
         // this only work when creating new document that would not work for the update document
         return val < this.price;
       },
-      message: "Discount price ({VALUE}) should be below regular price",
+      message: 'Discount price ({VALUE}) should be below regular price',
     },
   },
 
@@ -59,7 +59,7 @@ const tourSchema = new mongoose.Schema({
     type: String,
     //trim will remove all the white space at the begining and at the end
     trim: true,
-    required: [true, "A tour must have a description"],
+    required: [true, 'A tour must have a description'],
   },
   description: {
     type: String,
@@ -67,7 +67,7 @@ const tourSchema = new mongoose.Schema({
   },
   imageCover: {
     type: String,
-    required: [true, "A tour must have a cover image"],
+    required: [true, 'A tour must have a cover image'],
   },
   secretTour: {
     type: Boolean,
@@ -83,19 +83,19 @@ const tourSchema = new mongoose.Schema({
 });
 
 // DOCUMENT MIDDLEWARE: RUNS BEFORE .SAVE() AND .CREATE()
-tourSchema.pre("save", function (next) {
+tourSchema.pre('save', function (next) {
   // console.log(this); //this will point here to the currently process document.
   this.slug = slugify(this.name, { lower: true });
   next();
 });
 
 // we can create more than 1 pre middleware.
-tourSchema.pre("save", function (next) {
+tourSchema.pre('save', function (next) {
   next();
 });
 
 // POST MIDDLEWARE EXECUTE AFTER THE PRE MIDDLEWARE EXECUTE AFTER CREATING AND SAVING THE DOCUMENT TO DATABASE.
-tourSchema.post("save", function (doc, next) {
+tourSchema.post('save', function (doc, next) {
   // console.log(doc);
   next();
 });
@@ -118,12 +118,12 @@ tourSchema.post(/^find/, function (doc, next) {
 
 // AGGREGATION MIDDLEWARE
 
-tourSchema.pre("aggregate", function (next) {
+tourSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } }); //adding in begining of an array
   // console.log(this.pipeline());
   next();
 });
 
-const Tour = mongoose.model("Tour", tourSchema);
+const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;

@@ -25,12 +25,16 @@ app.use('/api/v1/users', userRouter);
 // 👉 HANDLE THE ROUTE WHICH ARE NOT DEFINED
 
 app.all('*', (req, res, next) => {
+  // 👉 BAD PRACTICE
+  //  const err = new Error(`can't find ${req.originalUrl} on this server`);
+  // err.status = 'fail';
+  // err.statusCode = 404;
+  // 👉 GOOD PRACTICE
   // whenever we pass argument from the next it will automatically detect there is an error and it will escape all the midleware and would call the global error handle middleware.
   next(new AppError(`can't find ${req.originalUrl} on this server`, 404));
 });
 
-//
-
+// whenever there is four arguments of a middleware express will automatically detect its an error middleware. And upon error express will leave all the middleware and called that global one.
 app.use(globalErrorHandler);
 
 module.exports = app;

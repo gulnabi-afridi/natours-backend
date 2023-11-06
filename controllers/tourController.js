@@ -14,13 +14,15 @@ exports.aliasTopTours = async (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (req, res) => {
-  // execute query
+exports.getAllTours = catchAsync(async (req, res, next) => {
+  // preparing query
   const features = new APIFeatures(Tour.find(), req.query)
     .filter()
     .sort()
     .limitFields()
     .paginate();
+
+  // execute query
   const tours = await features.query;
 
   res.status(200).json({
@@ -35,6 +37,7 @@ exports.getAllTours = catchAsync(async (req, res) => {
 exports.getTourById = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
   if (!tour) {
+    // whenever you passed any arguments by next that will automatically detect and called the errorController.
     return next(new AppError('No tour found with that ID', 404));
   }
   res.status(200).json({
@@ -104,7 +107,7 @@ exports.getTourStats = catchAsync(async (req, res) => {
       $sort: { avgPrice: 1 }, // 1 mean in acseding order
     },
     // {
-    //   $match: { _id: { $ne: "EASY" } },
+    //   $match: { _id: { $ne: 'EASY' } },
     // },
   ]);
   res.status(200).json({
@@ -113,7 +116,7 @@ exports.getTourStats = catchAsync(async (req, res) => {
   });
 });
 
-exports.getMonthlyPlan = catchAsync(async (req, res) => {
+exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   const year = req.params.year;
   const plane = await Tour.aggregate([
     {

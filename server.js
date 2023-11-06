@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-//  HOW TO CATCH UNCAUGHT EXCEPTION
+// HOW TO CATCH UNCAUGHT EXCEPTION
 // All errors that occur in our Synchronous code but are not handled anywhere are called UNCAUGHT EXCEPTION.
 // this code should be at the top.
 

@@ -14,6 +14,12 @@ app.use(express.urlencoded({ extended: true }));
 // serving the static pages ----------->
 app.use(express.static(`${__dirname}/public`));
 
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  // console.log(req.headers);
+  next();
+});
+
 // environment varialbe ------------>
 
 // console.log(process.env);

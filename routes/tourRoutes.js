@@ -1,5 +1,6 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 // The param method is used to define middleware that will be executed whenever a specific parameter, in this case, "id," is present in the URL path. It allows you to extract and process the value of the specified parameter before passing control to the next middleware or route handler.
@@ -21,7 +22,7 @@ router.route('/yearly-plan/:year').get(tourController.getMonthlyPlan);
 
 router
   .route('/')
-  .get(tourController.getAllTours)
+  .get(authController.protect, tourController.getAllTours)
   //   ====> chaining of multiple midleware
   .post(tourController.createNewTour);
 
@@ -29,6 +30,10 @@ router
   .route('/:id')
   .get(tourController.getTourById)
   .patch(tourController.updateTour)
-  .delete(tourController.DeleteTour);
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.DeleteTour,
+  );
 
 module.exports = router;

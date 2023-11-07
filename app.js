@@ -7,6 +7,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const hpp = require('hpp');
 
 const e = require('express');
 
@@ -36,6 +37,21 @@ app.use(mongoSanitize());
 
 // Data sanitization against xss.
 app.use(xss());
+
+// Prevent parameter pollution ------------->
+// whitelist mean for which we allowed the duplicate in the query string.
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'price',
+      'ratingsAverage',
+      'difficulty',
+      'ratingsQuantity',
+      'maxGroupSize',
+    ],
+  }),
+);
 
 app.use(express.urlencoded({ extended: true }));
 

@@ -3,11 +3,23 @@ const userRouter = require('./routes/userRoutes');
 const tourRouter = require('./routes/tourRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
+const rateLimit = require('express-rate-limit');
 
 const e = require('express');
 
 const app = express();
-// 👉 midleware
+// 👉 Global midleware
+
+const limiter = rateLimit({
+  // we allow 100 requests in a hour
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many request from this IP, please try again in an hour!',
+});
+
+// this middleware will work for all the routes which starts from the /api.
+app.use('/api', limiter);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

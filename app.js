@@ -55,7 +55,7 @@ app.use(
 
 app.use(express.urlencoded({ extended: true }));
 
-// serving the static files ----------->
+// serving the static files ----------2----->
 app.use(express.static(`${__dirname}/public`));
 
 // Test middleware
@@ -65,7 +65,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// environment varialbe ------------>
+// environment varialbe ---------------->
 
 // console.log(process.env);
 

@@ -76,7 +76,7 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-// protecting routes .............
+// protecting routes ...............
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) getting token and check of it's there
   let token;
@@ -125,7 +125,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-// we cant pass directly through the midleware an arguments. thats why we warapped the middleware in a wrapper.
+// we cant pass directly through the midleware an arguments. thats why we wrapped the middleware in a wrapper.
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     // we passed the roles in that form ['admin','lead-guide']
@@ -139,7 +139,7 @@ exports.restrictTo = (...roles) => {
   };
 };
 
-// forgot password ------------->
+// forgot password --------------->
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // 1) get user based on POSTED email
@@ -183,7 +183,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
-// reset password ------------->
+// reset password ---------------->
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
   // 1) get user based on the token
@@ -211,12 +211,12 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.passwordResetExpires = undefined;
   await user.save({ validateBeforeSave: true });
 
-  // 3) Update changedPasswordAt property for the user
+  // 3) Update changedPasswordAt property for the user // that is done through document middleware
   // 4) Log the user in, send JWT
   createSendToken(user, 200, res);
 });
 
-// update password ------------>
+// update password ---------------->
 
 exports.updatePassword = async (req, res, next) => {
   // 1) Get user from collection

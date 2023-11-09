@@ -80,6 +80,31 @@ const tourSchema = new mongoose.Schema({
     select: false,
   },
   startDates: [Date],
+  startLocation: {
+    // GeoJSON format in mongoDB in order to specify the geo related data.
+    type: {
+      type: String,
+      default: 'point',
+      enum: ['point'],
+    },
+    coordinates: [Number], // we expect in an array of number. first latitude second longitude.
+    address: String,
+    description: String,
+  },
+  // embedded documnet we have to use that with an array.
+  locations: [
+    {
+      type: {
+        type: String,
+        default: 'point',
+        enum: ['point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+      day: Number,
+    },
+  ],
 });
 
 // DOCUMENT MIDDLEWARE: RUNS BEFORE .SAVE() AND .CREATE()

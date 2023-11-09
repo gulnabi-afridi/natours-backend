@@ -10,7 +10,7 @@ const tourSchema = new mongoose.Schema({
     trim: true,
     maxlength: [40, 'A tour name must have less or equal then 40 characters'],
     minlength: [10, 'A tour name must have more or equal then 10 characters'],
-    validate: [validator.isAlpha, 'A tour name must contain only letters'],
+    // validate: [validator.isAlpha, 'A tour name must contain only letters'],
   },
   slug: String,
   duration: {
@@ -84,8 +84,8 @@ const tourSchema = new mongoose.Schema({
     // GeoJSON format in mongoDB in order to specify the geo related data.
     type: {
       type: String,
-      default: 'point',
-      enum: ['point'],
+      default: 'Point',
+      enum: ['Point'],
     },
     coordinates: [Number], // we expect in an array of number. first latitude second longitude.
     address: String,
@@ -96,13 +96,19 @@ const tourSchema = new mongoose.Schema({
     {
       type: {
         type: String,
-        default: 'point',
-        enum: ['point'],
+        default: 'Point',
+        enum: ['Point'],
       },
       coordinates: [Number],
       address: String,
       description: String,
       day: Number,
+    },
+  ],
+  guides: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
     },
   ],
 });
@@ -132,6 +138,14 @@ tourSchema.pre(/^find/, function (next) {
   // tourSchema.pre("find", function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
+  next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
   next();
 });
 

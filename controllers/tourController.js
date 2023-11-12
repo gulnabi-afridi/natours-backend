@@ -1,7 +1,5 @@
 const Tour = require('./../models/tourModel');
-const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
 
 // =====> methodes
@@ -15,26 +13,7 @@ exports.aliasTopTours = async (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  // preparing query
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  // execute query
-  const tours = await features.query;
-
-  res.status(200).json({
-    message: 'success',
-    result: tours.length,
-    data: {
-      tours,
-    },
-  });
-});
-
+exports.getAllTours = factory.getAll(Tour);
 //{ path: 'reviews' , select:'name' } which you want to populate we can also pass the select option.
 exports.getTourById = factory.getOne(Tour, { path: 'reviews' });
 exports.updateTour = factory.updateOne(Tour);

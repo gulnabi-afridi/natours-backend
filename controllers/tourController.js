@@ -2,6 +2,8 @@ const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const factory = require('./handlerFactory');
+
 // =====> methodes
 
 exports.aliasTopTours = async (req, res, next) => {
@@ -47,33 +49,8 @@ exports.getTourById = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    // new 👉 true to return the modified document rather than the original.
-    new: true,
-    // runValidators 👉 on this command update validators validate the update operation against the model schema
-    runValidators: true,
-  });
-  if (!tour) {
-    return next(new AppError('cant find tour with that id', 404));
-  }
-  res.status(200).json({
-    message: 'success',
-    tour,
-  });
-});
-
-exports.DeleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id);
-  if (!tour) {
-    return next(new AppError('No tour found with that ID', 404));
-  }
-  res.status(204).json({
-    //204 mean content not fount
-    message: 'successfully deleted',
-    data: null,
-  });
-});
+exports.updateTour = factory.updateOne(Tour);
+exports.DeleteTour = factory.deleteOne(Tour);
 
 exports.createNewTour = catchAsync(async (req, res) => {
   const newTour = await Tour.create(req.body);

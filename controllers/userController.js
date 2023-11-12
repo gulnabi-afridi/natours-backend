@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const factory = require('./handlerFactory');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObject = {};
@@ -72,17 +73,6 @@ exports.creatNewUser = (req, res) => {
   });
 };
 
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'fail',
-    message: 'this route is not defined yet',
-  });
-};
-
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    // 500 status code mean internal server error
-    status: 'fail',
-    message: 'this route is not defined yet',
-  });
-};
+// Do not update password with this.
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);

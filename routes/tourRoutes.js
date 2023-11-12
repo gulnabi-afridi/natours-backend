@@ -52,7 +52,7 @@ router
   );
 
 router
-  .route('/:id')
+  .route('tours/:id')
   .get(tourController.getTourById)
   .patch(
     authController.protect,

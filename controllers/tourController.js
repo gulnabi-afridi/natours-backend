@@ -35,23 +35,10 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getTourById = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id).populate('reviews');
-  if (!tour) {
-    // whenever you passed any arguments by next that will automatically detect and called the errorController.
-    return next(new AppError('No tour found with that ID', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
-
+//{ path: 'reviews' , select:'name' } which you want to populate we can also pass the select option.
+exports.getTourById = factory.getOne(Tour, { path: 'reviews' });
 exports.updateTour = factory.updateOne(Tour);
 exports.DeleteTour = factory.deleteOne(Tour);
-
 exports.createNewTour = factory.createOne(Tour);
 
 exports.getTourStats = catchAsync(async (req, res) => {

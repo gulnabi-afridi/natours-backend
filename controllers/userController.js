@@ -59,20 +59,14 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: 'fail',
-    message: 'this route is not defined yet',
-  });
-};
-
 exports.creatNewUser = (req, res) => {
   res.status(500).json({
-    status: 'fail',
-    message: 'this route is not defined yet',
+    status: 'error',
+    message: 'please use signUp instead!',
   });
 };
 
 // Do not update password with this.
+exports.getUser = factory.getOne(User);
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);

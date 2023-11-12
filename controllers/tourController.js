@@ -52,15 +52,7 @@ exports.getTourById = catchAsync(async (req, res, next) => {
 exports.updateTour = factory.updateOne(Tour);
 exports.DeleteTour = factory.deleteOne(Tour);
 
-exports.createNewTour = catchAsync(async (req, res) => {
-  const newTour = await Tour.create(req.body);
-  res.status(201).json({
-    data: {
-      message: 'New Tour Created',
-      tour: newTour,
-    },
-  });
-});
+exports.createNewTour = factory.createOne(Tour);
 
 exports.getTourStats = catchAsync(async (req, res) => {
   const stats = await Tour.aggregate([

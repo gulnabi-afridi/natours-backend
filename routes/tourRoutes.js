@@ -31,21 +31,34 @@ router.use('/:tourId/reviews', reviewRouter);
 router
   .route('/top-5-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTours);
-
 router.route('/tour-stats').get(tourController.getTourStats);
 
-router.route('/yearly-plan/:year').get(tourController.getMonthlyPlan);
+router
+  .route('/yearly-plan/:year')
+  .get(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide', 'guide'),
+    tourController.getMonthlyPlan,
+  );
 
 router
   .route('/')
-  .get(authController.protect, tourController.getAllTours)
+  .get(tourController.getAllTours)
   //   ====> chaining of multiple midleware
-  .post(tourController.createNewTour);
+  .post(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.createNewTour,
+  );
 
 router
   .route('/:id')
   .get(tourController.getTourById)
-  .patch(tourController.updateTour)
+  .patch(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.updateTour,
+  )
   .delete(
     authController.protect,
     authController.restrictTo('admin', 'lead-guide'),

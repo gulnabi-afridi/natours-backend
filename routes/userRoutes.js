@@ -7,6 +7,7 @@ const {
   deleteUser,
   updateMe,
   deleteMe,
+  getMe,
 } = require('../controllers/userController');
 const authController = require('../controllers/authController');
 
@@ -20,14 +21,16 @@ router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
-router.patch(
-  '/updateMyPassword',
-  authController.protect,
-  authController.updatePassword,
-);
+// that middleware will protect all the routes that come after this.
+router.use(authController.protect);
 
-router.patch('/updateMe', authController.protect, updateMe);
-router.delete('/deleteMe', authController.protect, deleteMe);
+router.patch('/updateMyPassword', authController.updatePassword);
+router.get('/me', getMe, getUser);
+router.patch('/updateMe', updateMe);
+router.delete('/deleteMe', deleteMe);
+
+// middleware
+router.use(authController.restrictTo('admin'));
 
 router.route('/').get(getAllUser).post(creatNewUser);
 router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
